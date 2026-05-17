@@ -1,0 +1,180 @@
+import pygame
+import sys
+from pygame.locals import *
+import random
+
+pygame.init()
+
+screen_width = 600
+screen_height = 500
+screen_game = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Luigi's Haunted Maze")
+
+black = (0,0,0)
+blue = (0,0,255)
+white = (255,255,255)
+
+luigi = pygame.image.load("Luigi_with_the_Poltergust-200.png")
+basher = pygame.image.load("Gold_Ghost_LM.png")
+goldenGhost = pygame.image.load("Gold_Ghost_LM.png")
+greenie = pygame.image.load("Greenie_LM2 (New Version).png")
+goob = pygame.image.load("Goob_LM3.png")
+coin = pygame.image.load("Coin_LM.png")
+battery = pygame.image.load("Poltergust-200_Battery.png")
+
+pos = [224,288]
+speed = 4
+radius = 10
+
+pos_ghost = [224,244]
+speed_ghost = 2
+direction_ghost = [0,0]
+
+Maze = [
+  "XXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  "X............XX............X",
+  "X.XXXX.XXXXX.XX.XXXXX.XXXX.X",
+  "X.XXXX.XXXXX.XX.XXXXX.XXXX.X",
+  "X.XXXX.XXXXX.XX.XXXXX.XXXX.X",
+  "X..........................X",
+  "X.XXXX.XX.XXXXXXXX.XX.XXXX.X",
+  "X.XXXX.XX.XXXXXXXX.XX.XXXX.X",
+  "X......XX....XX....XX......X",
+  "XXXXXX.XXXXX XX XXXXX.XXXXXX",
+  "XXXXXX.XXXXX XX XXXXX.XXXXXX",
+  "XXXXXX.XX          XX.XXXXXX",
+  "XXXXXX.XX XXXXXXXX XX.XXXXXX",
+  "XXXXXX.XX XXXXXXXX XX.XXXXXX",
+  "          XXXXXXXX          ",
+  "XXXXXX.XX XXXXXXXX XX.XXXXXX",
+  "XXXXXX.XX XXXXXXXX XX.XXXXXX",
+  "XXXXXX.XX          XX.XXXXXX",
+  "XXXXXX.XX XXXXXXXX XX.XXXXXX",
+  "XXXXXX.XX XXXXXXXX XX.XXXXXX",
+  "X............XX............X",
+  "X.XXXXXXXXXX.XX.XXXXXXXXXX.X",
+  "X.XXXXXXXXXX.XX.XXXXXXXXXX.X",
+  "X...XX................XX...X",
+  "X.XXXXXXXXXX.XX.XXXXXXXXXX.X",
+  "X.XXXXXXXXXX.XX.XXXXXXXXXX.X",
+  "X......XX....XX....XX......X",
+  "X.XXXXXXXXXX.XX.XXXXXXXXXX.X",
+  "X.XXXXXXXXXX.XX.XXXXXXXXXX.X",
+  "X..........................X",
+  "XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  ]
+
+coinsOfMaze = [[(col_idx * 16 + 8, row_idx * 16 + 8) for col_idx, row in enumerate(row) if col == '.'] for row_idx, row in enumerate(Maze)]
+
+def maze_draw():
+  for row_idx, row in enumerate(Maze):
+    for col_idx, col in enumerate(row):
+      if col == "X":
+        pygame.draw.rect(screen_game, blue, (col_i*16, row_i*16, 16, 16))
+
+def dotsdraw():
+  for row in coinsOfMaze:
+    for coinsOfMaze in row:
+      pygame.draw.circle(screen_game, white, coinsOfMaze, 3)
+
+def luigi_movement():
+  nextpos = [pos[0]+direction[0] * speed, pos[1]+direction[1] * speed]
+  row = int(nextpos[1]/16)
+  col = int(nextpos[0]/16)
+  if Maze[row][col] != "X":
+    pos[0] = nextpos[0]
+    pos[1] = nextpos[1]
+
+def ghost_movement():
+  global pos_ghost
+    direction = [[1,0], [-1,0], [0,1], [0,-1]]
+    valid_direction = []
+    mindist = float('inf')
+    best_direct = [0,0]
+    for d in direction:
+      nextpos = [pos_ghost[0] + d[0] * speed_ghost, pos_ghost[1] + d[1] * speed_ghost]
+      row = int(nextpos[1]/16)
+      col = int(nextpos[0]/16)
+      if 0 <= row < len(Maze[0] and Maze[row][col] != "X":
+        dist = math. hypot(next_pos[0] - pos[0], next_pos[1] - pos[1])
+        if Maze[row][col] != "X":
+          mindist = dist
+          best_direction = d
+
+  if valid_direction:
+    pos_ghost[0] += best_direction[0] * speed_ghost
+    pos_ghost[1] += best_direction[1] * speed_ghost
+    print(f"Ghost moved to" {pos_ghost} "using directions" {best_directions})
+  else:
+    random_direction = random.choice(direction)
+    pos_ghost[0] += best_direction[0] * speed_ghost
+    pos_ghost[1] += best_direction[1] * speed_ghost
+    print(f"no valid directions for ghosts movement")
+
+def collision():
+  luigi_rect = pygame.Rect(pos[0] - radius, pos[1] - radius, radius * 2, radius * 2)
+  ghost_rect = pygame.Rect(pos_ghost[0] - radius, pos_ghost[1] - radius, radius * 2, radius * 2)
+  return luigi_rect.colliderect(ghost_rect)
+
+def collect_coins():
+  global coinsOfMaze
+  center = (pos[0], pos[1])
+  for row in coinsOfMaze:
+    for coinsOfMaze in row:
+      if(center[0] * 2 + (center[1] - coinsOfMaze[1] * 2 < (radius + 3) * 2:
+        row.remove(coinsOfMaze)
+
+def check_win():
+  for row in coinsOfMaze:
+    if row:
+      return False
+    return True
+
+def main():
+  clock = pygame.time.Clock()
+  while True:
+    for event in pygame.event.get():
+      if event.type == QUIT:
+        pygame.quit()
+        sys.exit()
+      elif event.type == KEYDOWN:
+        if event.keys == K_LEFT:
+          direction[0] = -1
+          direction[1] = 0
+        elif event.keys == K_RIGHT:
+          direction[0] = 1
+          direction[1] = 0
+        elif event.keys == K_UP:
+          direction[0] = 0
+          direction[1] = -1
+        elif event.keys == K_DOWN:
+          direction[0] = 0
+          direction[1] = 1
+    
+      pacman_movement()
+      ghost_movement()
+      collect_coins()
+      
+      if collision():
+        print("Game Over")
+        pygame.quit()
+        sys.exit
+      
+      if win(coinsOfMaze):
+        print("You Win!")
+        pygame.quit()
+        sys.exit()
+        
+      screen_game.fill(Black)
+      mazedraw()
+      dotsdraw()
+      screen.blit(luigi, (int(pos[0]), int(pos[1]))
+      screen.blit(basher, int(pos[0]), int(pos[1]))
+      screen.blit(goldenGhost, int(pos[0]), int(pos[1]))
+      screen.blit(greenie, int(pos[0]), int(pos[1]))
+      screen.blit(goob, int(pos[0]), int(pos[1]))
+      pygame.display.update()
+      clock.tick(30)
+
+if __name__ == "__main__":
+  main()
